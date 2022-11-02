@@ -1,0 +1,83 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Lisää Tapahtuma</title>
+<meta http-equiv="content-type" content="text/html ; charset=UTF-8">
+
+</head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+<style>
+.info {
+	font-size: 0.6em;
+	
+	vertical-align: top
+}
+</style>
+<body>
+
+
+	<div th:replace="header :: menu"></div>
+
+
+
+
+	<div class="container">
+		<h1>Lisää Tapahtuma</h1>
+		<form th:object="${tp}" th:action="@{save}" action="#" method="post"
+			class="form-group">
+			<div class="form-group">
+				<label for="name">Nimi</label> <input class="form-control"
+					name="name" type="text" id="name" th:field="*{name}" />
+			</div>
+			<div class="form-group">
+				<label for="kuvaus">Kuvaus</label>
+				<textarea class="form-control" id="kuvaus" th:field="*{kuvaus}"
+					rows="5"> </textarea>
+			</div>
+			<div class="form-group">
+				<label for="paiva">Päivä</label> <input class="form-control"
+					type="date" placeholder="dd.mm.yyyy" id="paiva" th:field="*{paiva}" />
+			</div>
+			<div class="form-group">
+				<label for="hinta">Hinta</label> <input class="form-control"
+					type="text" id="hinta" th:field="*{hinta}" />
+			</div>
+			<div class="form-group">
+				<label for="paikka">Paikka</label> <input class="form-control"
+					type="text" id="paikka" th:field="*{paikka}" />
+			</div>
+
+
+
+			<div class="form-group">
+				<label for="kategoria">Kategoria <span class="info">*Jos
+						kategoriaa ei löydy listalta, voit lisätä uuden</span>
+				</label>
+				<div style="display: flex; flex-direction: row;">
+					<select id="kategoria" th:field="*{kategoria}" class="form-control">
+						<option value="" selected>Valitse...</option>
+						<option th:each="kt: ${kategoriat}" th:value="${kt.kategoriaId}"
+							th:text=${kt.nimi}></option>
+					</select>&nbsp;<a href="/lisaa-kategoria" class="btn btn-secondary">Lisää</a>
+				</div>
+			</div>
+
+
+
+
+
+
+
+
+
+
+			<div class="form-group">
+				<a class="btn btn-secondary" href="javascript:history.go(-1)">Edellinen</a>
+				<input type="submit" class="btn btn-success" value="Tallenna" />
+			</div>
+
+		</form>
+	</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<meta http-equiv="content-type" content="text/html ; charset=UTF-8">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+<head>
+<div th:replace="header :: header"></div>
+</head>
+
+<style>
+.container {
+	margin-top: 2%;
+}
+
+#katso_lisaa {
+	visibility: hidden;
+}
+
+.tr-data:hover #katso_lisaa {
+	visibility: visible !important;
+}
+</style>
+
+
+<body>
+	<div th:replace="header :: menu"></div>
+
+
+
+	<div class="container">
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<tr>
+					<th>Nimi</th>
+					<th>Kategoria</th>
+					<th>Paikka</th>
+					<th>Päivä</th>
+					<th>Hinta</th>
+
+					<th></th>
+
+
+				</tr>
+
+				<tr class="tr-data" th:each="tp: ${tapahtumat}">
+
+					<td th:text="${tp.name}"></td>
+					<td th:text="${tp.kategoria}? ${tp.kategoria.nimi}:''"></td>
+					<td th:text="${tp.paikka}"></td>
+					<td th:text="${tp.paiva}"></td>
+					<td th:text="${tp.hinta}"></td>
+
+
+					<td><a id="katso_lisaa" class="btn btn-outline-primary"
+						th:href=@{/details/{id}(id=${tp.id})}>Katso lisää</a></td>
+				</tr>
+			</table>
+			<div class="container" id="napit">
+				<a href="/lisaa"><button class="btn btn-outline-primary">Add</button></a>
+
+
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
