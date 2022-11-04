@@ -1,17 +1,23 @@
 package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity(name="users")
 public class User {
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
-    private Long id;
+    private Long userId;
 
     // Username with unique constraint
     @Column(name = "username", nullable = false, unique = true)
@@ -21,6 +27,16 @@ public class User {
     private String passwordHash;
 
     @Column(name = "role", nullable = false)
+    
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" )
+	@JsonIgnoreProperties("users")
+	private List<Tapahtuma> tapahtumat;
+    
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" )
+	@JsonIgnoreProperties("users")
+	private List<Lippu> liput;
+	
+    
     private String role;
     
     public User() {
@@ -33,12 +49,30 @@ public class User {
 		this.role = role;
 	}
 
-	public Long getId() {
-		return id;
+
+
+	public List<Lippu> getLiput() {
+		return liput;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setLiput(List<Lippu> liput) {
+		this.liput = liput;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public List<Tapahtuma> getTapahtumat() {
+		return tapahtumat;
+	}
+
+	public void setTapahtumat(List<Tapahtuma> tapahtumat) {
+		this.tapahtumat = tapahtumat;
 	}
 
 	public String getUsername() {

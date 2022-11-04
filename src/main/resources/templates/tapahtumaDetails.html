@@ -53,9 +53,10 @@
 			<h5>Lippuja jäljellä:</h5>
 			<p class="detail" th:text="${tp.get().lippujaJaljella}"></p>
 		</div>
+		<div>
 		<a class="btn btn-outline-primary" href="javascript:history.go(-1)">Back</a> 
-		<a th:href=@{/delete/{id}(id=${tp.get().id})} class="btn btn-outline-danger">Delete</a>
-		<a th:href=@{/details/{id}(id=${tp.get().id})} class="btn btn-outline-warning">Edit</a>
+		<a sec:authorize="hasAuthority('ADMIN')" th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})} class="btn btn-outline-danger">Delete</a>
+		<a sec:authorize="hasAuthority('ADMIN')" th:href=@{/details/{id}(id=${tp.get().tapahtumaId})} class="btn btn-outline-warning">Edit</a></div>
 	</div>
 
 

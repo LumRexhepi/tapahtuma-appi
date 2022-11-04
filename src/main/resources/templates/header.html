@@ -7,12 +7,15 @@
 
 
 	<script type="text/javascript"></script>
-	
+
 </div>
 <body>
 
 	<div th:fragment="menu">
 		<meta http-equiv="content-type" content="text/html ; charset=UTF-8">
+		<link rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 		<style>
 #header {
 	display: flex;
@@ -20,14 +23,69 @@
 	justify-content: space-between;
 	padding: 10px;
 }
+
+.dropbtn {
+	background-color: white;
+	vertical-align: top;
+	border: none;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	min-width: 160px;
+	z-index: 1;
+}
+
+.dropdown-content a, menu-btn {
+	color: black;
+	padding-bottom: 8px;
+	padding-top: 8px;
+	display: block;
+	text-decoration: none;
+}
+
+.dropdown-content a:hover {
+	background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.header-button {
+	width: 160px;
+	text-align: left;
+}
+
+
 </style>
 		<div id="header">
 			<h3>Tapahtuma-appi</h3>
-			<h3 th:inline="text">Tervetuloa
-				[[${#httpServletRequest.remoteUser}]]!</h3>
-			<form th:action="@{/logout}" method="post">
-				<input class="btn btn-danger" type="submit" value="Sign Out" />
-			</form>
+			<h3 th:inline="text">Tervetuloa</h3>
+
+			<div style="min-width: 160px;">
+				<div class="dropdown">
+					<button class="dropbtn">
+						<h4 class="header-button">
+							[[${#httpServletRequest.remoteUser}]] &nbsp;<i class="fa">&#xf107;</i>
+						</h4>
+					</button>
+					<div class="dropdown-content">
+						<a href="#">Liput</a> 
+						<a sec:authorize="hasAuthority('ADMIN')" href="#">Admin-paneeli</a>
+						<form th:action="@{/logout}" method="post">
+							<input id="menu-btn" class="btn btn-danger" type="submit" value="Sign Out" />
+						</form>
+
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>

@@ -3,11 +3,13 @@ package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain;
 
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -26,7 +29,7 @@ public class Tapahtuma {
 
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tapahtumaId;
 	private String name;
 	private String kuvaus;
@@ -39,13 +42,25 @@ public class Tapahtuma {
 	
 	
 	@ManyToOne
-	@JsonIgnoreProperties("kategoriat")
-	@JoinColumn(name = "kategoriaid")
+	@JsonIgnoreProperties("tapahtumat")
+	@JoinColumn(name = "kategoriaId")
 	private Kategoria kategoria;
+	
+	@ManyToOne
+	@JsonIgnoreProperties("tapahtumat")
+	@JoinColumn(name = "userId")
+	private User user;
 
 	@ManyToMany(mappedBy = "tapahtumat" )
-	private List<Tagi> tagit;
+	@JsonIgnoreProperties("tapahtumat")
+	private List<Tagi> tagit = new ArrayList<>();
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "tapahtuma" )
+	@JsonIgnoreProperties("tapahtumat")
+	private List<Lippu> liput;
 
+	
+	
 	public Tapahtuma() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -53,7 +68,7 @@ public class Tapahtuma {
 
 	
 	public Tapahtuma( String name, String kuvaus, Date paiva, double hinta, int lippujaJaljella,
-			String paikka, Kategoria kategoria, List<Tagi> tagit) {
+			String paikka, Kategoria kategoria, List<Tagi> tagit, User user) {
 		super();
 		this.name = name;
 		this.kuvaus = kuvaus;
@@ -63,10 +78,31 @@ public class Tapahtuma {
 		this.paikka = paikka;
 		this.kategoria = kategoria;
 		this.tagit = tagit;
+		this.user = user;
 	}
 
 
 	
+
+	public User getUser() {
+		return user;
+	}
+
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+
+	public List<Lippu> getLiput() {
+		return liput;
+	}
+
+
+	public void setLiput(List<Lippu> liput) {
+		this.liput = liput;
+	}
+
 
 	public List<Tagi> getTagit() {
 		return tagit;

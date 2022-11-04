@@ -18,13 +18,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 public class Kategoria {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long kategoriaid;
 	private String nimi;
 	
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kategoria" )
-//	@JsonIgnoreProperties("kategoriat")
+	@JsonIgnoreProperties("kategoriat")
 	private List<Tapahtuma> tapahtumat;
 	
 
