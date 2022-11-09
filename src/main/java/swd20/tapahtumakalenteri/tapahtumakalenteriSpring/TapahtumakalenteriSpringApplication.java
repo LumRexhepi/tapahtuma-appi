@@ -77,7 +77,7 @@ public class TapahtumakalenteriSpringApplication {
 			
 			
 //			Tapahtuma tp1 = new Tapahtuma(null, null, null, 0, 0, null, a, null, user1);
-			Tapahtuma tp2 = new Tapahtuma("Disko", "Disko yökerhossa", fdate.parse("02.11.2022") , 15.00, 1500, "Helsinki", c, tagit, user1);
+			Tapahtuma tp2 = new Tapahtuma("Disko", "Disko yökerhossa", fdate.parse("02.11.2025") , 15.00, 1500, "Helsinki", c, tagit, user1);
 			
 //			trepository.save(tp1);
 			trepository.save(tp2);

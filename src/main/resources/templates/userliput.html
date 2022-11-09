@@ -39,7 +39,9 @@
 }
 
 #linkki:hover {
-	padding-left: 10px;
+	margin-left: 10px;
+	margin-right: -10px;
+
 }
 
 .inner-container {
@@ -51,12 +53,13 @@
 	padding: 5px 15px 5px 15px;
 	border-radius: 25px;
 	box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-	margin-top:20px;
+	margin-top: 20px;
 }
 
 .inner-container:hover {
 	box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75) inset;
 	text-decoration: none;
+	
 }
 
 .inner-contaner {
@@ -77,9 +80,9 @@
 		</div>
 	</div>
 	<div class="container">
-		<th:block th:each="lippu: ${liput}">
-			<a id="linkki" href="/lippu">
-			<div class="inner-container">
+		<th:block th:each="lippu: ${liput}" th:unless="${lippu.kaytetty}">
+			<a id="linkki" th:href="@{/nayta-lippu/{id}(id=${lippu.lippuId})}">
+				<div class="inner-container">
 					<h2 class="details" th:text="${lippu.LippuId}"></h2>
 					<h3 class="details"
 						th:text="${lippu.tapahtuma}? ${lippu.tapahtuma.name}"></h3>
@@ -90,7 +93,8 @@
 						th:text="${lippu.tapahtuma}? ${lippu.tapahtuma.hinta}+ €"></h4>
 
 
-				</div> </a>
+				</div>
+			</a>
 		</th:block>
 
 	</div>

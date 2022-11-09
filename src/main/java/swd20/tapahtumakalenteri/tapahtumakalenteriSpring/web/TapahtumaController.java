@@ -125,7 +125,6 @@ public class TapahtumaController {
 //	@PreAuthorize("hasAuthority('ADMIN')")
 //	@PreAuthorize("#id == authentication.trepository.findById(id)).get().getUser().getUserId()")
 	public String deleteTapahtuma(@PathVariable("id") Long id, Model model, Principal pr) {
-
 		Long taphtuma_userId = trepository.findById(id).get().getUser().getUserId();
 		User käyttäjä = urepository.findByUsername(pr.getName());
 		if (taphtuma_userId == käyttäjä.getUserId() || käyttäjä.getRole() == "ADMIN" ) {
@@ -135,6 +134,17 @@ public class TapahtumaController {
 		return "redirect:../tapahtumalista";
 	}
 	
+	@GetMapping("/nayta-lippu/{id}")
+	public String naytaLippu(Model model, @PathVariable("id") Long id) {
+		model.addAttribute("tp", lrepository.findById(id).get().getTapahtuma());
+		model.addAttribute("lippu", lrepository.findById(id));
+		return "Lippu";
+	}
 	
+	@PostMapping("/kayta-lippu")
+	public String kaytaLippu(Lippu lippu) {
+		lrepository.kaytalippu(lippu.getLippuId());
+		return "redirect:omat-liput";
+	}
 	
 }

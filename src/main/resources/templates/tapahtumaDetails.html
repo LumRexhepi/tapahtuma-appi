@@ -98,19 +98,11 @@
 			<div class="ala-container-inner-vas">
 				<a class="btn btn-outline-primary" href="javascript:history.go(-1)">Back</a>
 				
-				<a th:if="${user.UserId} == ${tp.get().user.UserId}" sec:authorize="hasAuthority('USER')"
+				<a th:if="${user.UserId} == ${tp.get().user.UserId} or ${user.role} == 'ADMIN'"
 					th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})}
 					class="btn btn-outline-danger">Delete</a>
-					 <a
-					sec:authorize="hasAuthority('ADMIN')"
-					th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})}
-					class="btn btn-outline-danger">Delete</a> 
 					<a
-					sec:authorize="hasAuthority('ADMIN')"
-					th:href=@{/edit/{id}(id=${tp.get().tapahtumaId})} 
-					class="btn btn-outline-warning">Edit</a> 
-					<a
-					th:if="${user.UserId} == ${tp.get().user.UserId}" sec:authorize="hasAuthority('USER')"
+					th:if="${user.UserId} == ${tp.get().user.UserId} or ${user.role} == 'ADMIN'"
 					th:href=@{/edit/{id}(id=${tp.get().tapahtumaId})}
 					class="btn btn-outline-warning">Edit</a>
 			</div>

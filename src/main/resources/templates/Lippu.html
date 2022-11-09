@@ -52,65 +52,51 @@
 	<div th:replace="header :: menu"></div>
 
 	<div class="container">
-		<h1>Tapahtuma</h1>
+		<h1>Lippu</h1>
 
 
 
 		<div>
-			<h5>Nimi</h5>
-			<p class="detail" th:text=${tp.get().name}></p>
+			<h5>Lippu Id</h5>
+			<p class="detail" th:text=${lippu.get().lippuId}></p>
+		</div>
+		<div>
+			<h5>Tapahtuman nimi</h5>
+			<p class="detail" th:text=${tp.Name}></p>
 		</div>
 
- 		 <div><h5>Kategoria</h5>
- 		 <p class="detail" th:text="${tp.get().kategoria}? ${tp.get().kategoria.nimi}:''"></p></div>
+
+		<div>
+			<h5>Kategoria</h5>
+			<p class="detail" th:text="${tp.Kategoria}? ${tp.Kategoria.nimi}:''"></p>
+		</div>
 
 		<div>
 			<h5>Kuvaus:</h5>
-			<p class="detail" th:text=${tp.get().kuvaus}></p>
+			<p class="detail" th:text=${tp.Kuvaus}></p>
 		</div>
 		<div>
 			<h5>Paikka:</h5>
-			<p class="detail" th:text="${tp.get().paikka}"></p>
+			<p class="detail" th:text="${tp.Paikka}"></p>
 		</div>
 		<div>
 			<h5>Päivä:</h5>
-			<p class="detail" th:text="${tp.get().paiva}"></p>
+			<p class="detail" th:text="${tp.Paiva}"></p>
 		</div>
 		<div>
 			<h5>Hinta:</h5>
-			<p class="detail" th:text="${tp.get().hinta}"></p>
+			<p class="detail" th:text="${tp.Hinta}"></p>
 		</div>
-		<div>
-			<h5>Lippuja jäljellä:</h5>
-			<p class="detail" th:text="${tp.get().lippujaJaljella}"></p>
-		</div>
-		<div>
-			<a class="btn btn-outline-primary" href="javascript:history.go(-1)">Back</a>
-			<a sec:authorize="hasAuthority('ADMIN')" 
-				th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})}
-				class="btn btn-outline-danger">Delete</a> <a
-				sec:authorize="hasAuthority('ADMIN')"
-				th:href=@{/details/{id}(id=${tp.get().tapahtumaId})}
-				class="btn btn-outline-warning">Edit</a>
-		</div>
+		<form th:object="${lippu}" action=# th:action="@{/kayta-lippu}"
+			method="post">
+			<input type="hidden" id="lippuId" name="LippuId"
+				th:value="${lippu.get().lippuId}" th:attr="name = 'LippuId'" /> 
+				<input type="submit" class="btn btn-success" value="Lunasta" />
 
-<!-- 		<div class="suositukset">
-			<h2>Katso myös näitä:</h2>
 
-			<div class="container-suositukset">
+		</form>
 
-				<th:blok th:each="tp: ${tapahtumat}">
-					<div class="inner-container">
-						<h5 th:text="${tp.name}"></h5>
-						<p id="kuvaus" th:text="${tp.kuvaus}"></p>
-						<p th:text="${tp.kategoria}? ${tp.kategoria.nimi}:''"></p>
-						<a id="katso_lisaa" class="btn btn-outline-primary"
-							th:href=@{/details/{id}(id=${tp.tapahtumaId})}>Katso lisää</a>
-					</div>
-
-				</th:blok>
-			</div> -->
-		</div>
 	</div>
+
 </body>
 </html>

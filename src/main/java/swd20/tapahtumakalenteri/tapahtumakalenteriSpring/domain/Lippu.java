@@ -1,5 +1,6 @@
 package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,9 +16,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 public class Lippu {
 	@Id
+	@Column(name = "lippuid")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long lippuId;
 	
+	@Column(name = "kaytetty")
 	private boolean kaytetty = false;
 	
 	@JsonIgnore
