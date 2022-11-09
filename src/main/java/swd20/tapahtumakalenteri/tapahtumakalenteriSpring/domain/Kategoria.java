@@ -24,7 +24,7 @@ public class Kategoria {
 	
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kategoria" )
-	@JsonIgnoreProperties("kategoriat")
+	@JsonIgnoreProperties("kategoria")
 	private List<Tapahtuma> tapahtumat;
 	
 

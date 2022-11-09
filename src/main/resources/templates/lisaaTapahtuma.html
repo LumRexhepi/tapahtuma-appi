@@ -12,6 +12,10 @@
 	font-size: 0.7em;
 	vertical-align: top
 }
+
+body {
+	margin-bottom: 200px
+}
 </style>
 <body>
 
@@ -60,6 +64,15 @@
 				</div>
 				<span class="info">*Jos kategoriaa ei löydy listalta, voit
 					lisätä uuden</span>
+			</div>
+			<div class="form-group">
+				<label for="tagit">Tagit </label>
+					
+				<select id="tagit" th:field="*{tagit}" class="form-control" multiple size=5>
+					
+					<option th:each="tg: ${tagit}" th:value="${tg.tagId}"
+						th:text=${tg.nimi}></option>
+				</select>
 			</div>
 
 

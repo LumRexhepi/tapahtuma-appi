@@ -29,11 +29,11 @@ public class User {
     @Column(name = "role", nullable = false)
     
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" )
-	@JsonIgnoreProperties("users")
+	@JsonIgnoreProperties("user")
 	private List<Tapahtuma> tapahtumat;
     
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user" )
-	@JsonIgnoreProperties("users")
+	@JsonIgnoreProperties("user")
 	private List<Lippu> liput;
 	
     

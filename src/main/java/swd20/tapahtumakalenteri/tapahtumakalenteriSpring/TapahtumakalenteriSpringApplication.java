@@ -5,7 +5,8 @@ import java.util.ArrayList;
 
 import java.util.List;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,7 +26,7 @@ import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.UserRepository;
 
 @SpringBootApplication
 public class TapahtumakalenteriSpringApplication {
-
+	private static final Logger log = LoggerFactory.getLogger(TapahtumakalenteriSpringApplication.class);
 	public static void main(String[] args) {
 		SpringApplication.run(TapahtumakalenteriSpringApplication.class, args);
 	}
@@ -43,7 +44,7 @@ public class TapahtumakalenteriSpringApplication {
 			krepository.save(b);
 			krepository.save(c);
 			
-			
+	
 			Tagi d = new Tagi("Jalkapallo");
 			Tagi e = new Tagi("Nuoret");
 			Tagi f = new Tagi("Hip-Hop");
@@ -74,18 +75,20 @@ public class TapahtumakalenteriSpringApplication {
 			urepository.save(user2);
 			
 			
-			Tapahtuma tp1 = new Tapahtuma(null, null, null, 0, 0, null, a, null, user1);
+//			Tapahtuma tp1 = new Tapahtuma(null, null, null, 0, 0, null, a, null, user1);
 			Tapahtuma tp2 = new Tapahtuma("Disko", "Disko yökerhossa", fdate.parse("02.11.2022") , 15.00, 1500, "Helsinki", c, tagit, user1);
 			
-			trepository.save(tp1);
+//			trepository.save(tp1);
 			trepository.save(tp2);
 			
-			Lippu l1 = new Lippu(tp1, user1);
+			Lippu l1 = new Lippu(tp2, user1);
 			
 			lrepository.save(l1);
 			
-
-			
+			log.info("Tarkista että tagit on olemassa");
+			for (Tagi i : tagit) {
+				System.out.println(i.getNimi());
+			}
 				
 		};
 	

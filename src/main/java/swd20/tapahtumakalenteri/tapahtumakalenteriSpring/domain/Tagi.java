@@ -14,20 +14,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class Tagi {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tagId;
 	private String nimi;
 
 	@ManyToMany(cascade = { CascadeType.ALL })
+	@JsonIgnoreProperties("tagit")
 	@JoinTable(name = "tapahtuman_tagit", joinColumns = { @JoinColumn(name = "tagId") }, inverseJoinColumns = {
 			@JoinColumn(name = "tapahtumaId") }
 
 	)
 
-	private List<Tapahtuma> tapahtumat = new ArrayList<>();;
+	private List<Tapahtuma> tapahtumat = new ArrayList<Tapahtuma>();;
 
 	public Tagi(String nimi) {
 		super();

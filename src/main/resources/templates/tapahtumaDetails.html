@@ -8,11 +8,41 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
 <style>
 .detail {
-	background-color: lightgrey;
+	background-color: whitesmoke;
 }
 
 .container {
 	width: 50% !important;
+	margin-bottom: 300px;
+}
+
+.suositukset {
+	margin-top: 100px;
+}
+
+#kuvaus {
+	display: block;
+	white-space: wrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.container-suositukset {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 30px;
+	flex-wrap: wrap;
+}
+
+.inner-container {
+	display: flex;
+	flex-direction: column;
+	height: 170px;
+	align-content: space-between;
+	justify-content: space-between;
+	width: 200px;
+	margin-top: 20px;
 }
 </style>
 
@@ -20,7 +50,7 @@
 
 <body>
 	<div th:replace="header :: menu"></div>
-	
+
 	<div class="container">
 		<h1>Tapahtuma</h1>
 
@@ -31,7 +61,8 @@
 			<p class="detail" th:text=${tp.get().name}></p>
 		</div>
 
-		<!--  <div><h5>Kategoria</h5><p th:text="${tp.kategoria}? ${tp.kategoria.get().nimi}:''"></p></div>-->
+ 		 <div><h5>Kategoria</h5>
+ 		 <p class="detail" th:text="${tp.get().kategoria}? ${tp.get().kategoria.nimi}:''"></p></div>
 
 		<div>
 			<h5>Kuvaus:</h5>
@@ -54,12 +85,32 @@
 			<p class="detail" th:text="${tp.get().lippujaJaljella}"></p>
 		</div>
 		<div>
-		<a class="btn btn-outline-primary" href="javascript:history.go(-1)">Back</a> 
-		<a sec:authorize="hasAuthority('ADMIN')" th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})} class="btn btn-outline-danger">Delete</a>
-		<a sec:authorize="hasAuthority('ADMIN')" th:href=@{/details/{id}(id=${tp.get().tapahtumaId})} class="btn btn-outline-warning">Edit</a></div>
+			<a class="btn btn-outline-primary" href="javascript:history.go(-1)">Back</a>
+			<a sec:authorize="hasAuthority('ADMIN')" 
+				th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})}
+				class="btn btn-outline-danger">Delete</a> <a
+				sec:authorize="hasAuthority('ADMIN')"
+				th:href=@{/details/{id}(id=${tp.get().tapahtumaId})}
+				class="btn btn-outline-warning">Edit</a>
+		</div>
+
+		<div class="suositukset">
+			<h2>Katso myös näitä:</h2>
+
+			<div class="container-suositukset">
+
+				<th:blok th:each="tp: ${tapahtumat}">
+					<div class="inner-container">
+						<h5 th:text="${tp.name}"></h5>
+						<p id="kuvaus" th:text="${tp.kuvaus}"></p>
+						<p th:text="${tp.kategoria}? ${tp.kategoria.nimi}:''"></p>
+						<a id="katso_lisaa" class="btn btn-outline-primary"
+							th:href=@{/details/{id}(id=${tp.tapahtumaId})}>Katso lisää</a>
+					</div>
+
+				</th:blok>
+			</div>
+		</div>
 	</div>
-
-
-
 </body>
 </html>

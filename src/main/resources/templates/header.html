@@ -40,14 +40,16 @@
 	position: absolute;
 	min-width: 160px;
 	z-index: 1;
+	
 }
 
-.dropdown-content a, menu-btn {
+.dropdown-content a, #menu-btn {
 	color: black;
-	padding-bottom: 8px;
-	padding-top: 8px;
+	padding: 8px 12px 8px 12px; 
 	display: block;
 	text-decoration: none;
+	background-color:white;
+	z-index:1;
 }
 
 .dropdown-content a:hover {
@@ -62,11 +64,17 @@
 	width: 160px;
 	text-align: left;
 }
+#logo, #logo:hover  {
+text-decoration:none;
+color:black;
+}
 
-
+#menu-btn{
+color:red;
+}
 </style>
 		<div id="header">
-			<h3>Tapahtuma-appi</h3>
+			<a id="logo" href="/tapahtumalista"><h3>Tapahtuma-appi</h3></a>
 			<h3 th:inline="text">Tervetuloa</h3>
 
 			<div style="min-width: 160px;">
@@ -77,10 +85,11 @@
 						</h4>
 					</button>
 					<div class="dropdown-content">
+						<a href="#">Omat tapahtumat</a> 
 						<a href="#">Liput</a> 
 						<a sec:authorize="hasAuthority('ADMIN')" href="#">Admin-paneeli</a>
 						<form th:action="@{/logout}" method="post">
-							<input id="menu-btn" class="btn btn-danger" type="submit" value="Sign Out" />
+							<input id="menu-btn" class="btn btn-link" type="submit" value="Sign Out" />
 						</form>
 
 					</div>
