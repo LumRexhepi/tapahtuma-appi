@@ -62,7 +62,8 @@ public class TapahtumakalenteriSpringApplication {
 			tagit.add(f);
 			tagit.add(g);
 			
-
+			
+			
 			SimpleDateFormat fdate = new SimpleDateFormat("dd.MM.yyyy");
 
 			

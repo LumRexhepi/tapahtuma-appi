@@ -23,6 +23,8 @@ public class WebSecurityConfig {
 		http.authorizeRequests()
 			.antMatchers("/", "/home").permitAll()
 			 .antMatchers("/h2-console/**").permitAll()
+			 .antMatchers("/signup").permitAll()
+			 .antMatchers("/saveuser").permitAll()
 			.anyRequest()
 			.authenticated()
 			.and()
