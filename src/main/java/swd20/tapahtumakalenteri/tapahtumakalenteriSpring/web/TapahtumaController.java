@@ -1,7 +1,5 @@
 package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.web;
 
-
-
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Kategoria;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.KategoriaRepository;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.TagiRepository;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Tapahtuma;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.TapahtumaRepository;
+import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.User;
+import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.UserRepository;
 
 @CrossOrigin
 @Controller
@@ -29,6 +28,8 @@ public class TapahtumaController {
 	private KategoriaRepository krepository;
 	@Autowired
 	private TagiRepository tgrepository;
+	@Autowired
+	private UserRepository urepository;
 
 	@GetMapping("/tapahtumalista")
 	public String getBooks(Model model) {
@@ -40,42 +41,57 @@ public class TapahtumaController {
 
 	@GetMapping("/details/{id}")
 	public String showTapahtuma(@PathVariable("id") Long id, Model model, Principal principal) {
-		model.addAttribute("tp", trepository.findById(id) );
+		model.addAttribute("tp", trepository.findById(id));
 		model.addAttribute("tapahtumat", trepository.findAll());
-		model.addAttribute("user", principal.getName() );
+		model.addAttribute("user", principal.getName());
 		return "tapahtumaDetails";
 	}
-	
+
 	@GetMapping("/lisaa")
-	public String lisaaTapahtuma(Model model) {
-		model.addAttribute("tp", new Tapahtuma());
+	public String lisaaTapahtuma(Model model, Principal pr) {
+		Tapahtuma t = new Tapahtuma();
+		User user = urepository.findByUsername(pr.getName());
+		t.setUser(user);
+		model.addAttribute("tp", t);
 		model.addAttribute("kategoriat", krepository.findAll());
 		model.addAttribute("tagit", tgrepository.findAll());
+		
+		
 		return "lisaaTapahtuma";
-}
+	}
+
 	@PostMapping("/save")
 	public String Save(Tapahtuma tapahtuma) {
 		trepository.save(tapahtuma);
 		return "redirect:tapahtumalista";
 	}
-	
+
 	@GetMapping("/lisaa-kategoria")
 	public String lisaaKategoria(Model model) {
 		model.addAttribute("kategoria", new Kategoria());
-		
+
 		return "lisaakategoria";
-	
+
 	}
+
 	@PostMapping("/saveK")
 	public String SaveK(Kategoria kategoria) {
 		krepository.save(kategoria);
 		return "redirect:lisaa";
 	}
-	
-    @GetMapping("/login")
+
+	@GetMapping("/login")
 	public String login() {
 		return "login";
-	} 
-    
-   
+	}
+
+	@GetMapping("/omat-tapahtumat")
+	public String getOmatTapahtumat(Model model, Principal principal) {
+		String username = principal.getName();
+		User user = urepository.findByUsername(username);
+		model.addAttribute("tapahtumat", trepository.findOmatbyId(user.getUserId()));
+		return "usertapahtumat";
+
+	}
+
 }

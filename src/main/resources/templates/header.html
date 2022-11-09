@@ -85,7 +85,7 @@ color:red;
 						</h4>
 					</button>
 					<div class="dropdown-content">
-						<a sec:authorize="hasAuthority('USER')" href="#">Omat tapahtumat</a> 
+						<a sec:authorize="hasAuthority('USER')" href="/omat-tapahtumat">Omat tapahtumat</a> 
 						<a sec:authorize="hasAuthority('USER')" href="#">Liput</a> 
 						<a sec:authorize="hasAuthority('ADMIN')" href="#">Admin-paneeli</a>
 						<form th:action="@{/logout}" method="post">
