@@ -36,6 +36,11 @@ public class TapahtumaController {
 	private UserRepository urepository;
 	@Autowired
 	private LippuRepository lrepository;
+	
+	@GetMapping("/")
+	public String etusivu() {
+		return "redirect:tapahtumalista";
+	}
 
 	@GetMapping("/tapahtumalista")
 	public String getBooks(Model model) {
@@ -129,4 +134,7 @@ public class TapahtumaController {
 		}
 		return "redirect:../tapahtumalista";
 	}
+	
+	
+	
 }

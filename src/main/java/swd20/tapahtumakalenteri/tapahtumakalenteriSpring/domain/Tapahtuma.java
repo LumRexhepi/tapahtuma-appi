@@ -19,7 +19,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.Min;
 
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.Columns;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -32,17 +36,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Tapahtuma {
 	
 
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tapahtumaId;
 	private String name;
 	private String kuvaus;
 	
+	@FutureOrPresent
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date paiva;
 	private double hinta;
-	
+
+	@Min( value = 0)
 	@Column(name = "lippujajaljella")
 	private int lippujaJaljella;
 	private String paikka;
