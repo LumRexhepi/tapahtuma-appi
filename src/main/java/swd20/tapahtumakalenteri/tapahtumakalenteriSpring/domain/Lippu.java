@@ -6,9 +6,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@Table(name = "Lippu")
 @Entity
 public class Lippu {
 	@Id
@@ -26,7 +29,7 @@ public class Lippu {
 	
 	@ManyToOne
 	@JsonIgnoreProperties("liput")
-	@JoinColumn(name =   "userId")
+	@JoinColumn(name = "userId")
 	private User user;
 	
 	

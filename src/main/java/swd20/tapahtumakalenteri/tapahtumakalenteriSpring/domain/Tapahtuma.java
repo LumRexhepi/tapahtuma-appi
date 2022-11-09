@@ -42,6 +42,8 @@ public class Tapahtuma {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date paiva;
 	private double hinta;
+	
+	@Column(name = "lippujajaljella")
 	private int lippujaJaljella;
 	private String paikka;
 	

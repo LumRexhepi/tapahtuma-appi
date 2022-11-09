@@ -1,8 +1,10 @@
 package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.web;
 
 import java.security.Principal;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Kategoria;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.KategoriaRepository;
+import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Lippu;
+import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.LippuRepository;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.TagiRepository;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Tapahtuma;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.TapahtumaRepository;
@@ -30,6 +34,8 @@ public class TapahtumaController {
 	private TagiRepository tgrepository;
 	@Autowired
 	private UserRepository urepository;
+	@Autowired
+	private LippuRepository lrepository;
 
 	@GetMapping("/tapahtumalista")
 	public String getBooks(Model model) {
@@ -43,20 +49,19 @@ public class TapahtumaController {
 	public String showTapahtuma(@PathVariable("id") Long id, Model model, Principal principal) {
 		model.addAttribute("tp", trepository.findById(id));
 		model.addAttribute("tapahtumat", trepository.findAll());
-		model.addAttribute("user", principal.getName());
+		model.addAttribute("user", urepository.findByUsername(principal.getName()));
+		model.addAttribute("lippu", new Lippu());
 		return "tapahtumaDetails";
 	}
 
 	@GetMapping("/lisaa")
 	public String lisaaTapahtuma(Model model, Principal pr) {
-		Tapahtuma t = new Tapahtuma();
-		User user = urepository.findByUsername(pr.getName());
-		t.setUser(user);
-		model.addAttribute("tp", t);
+		model.addAttribute("tp", new Tapahtuma());
 		model.addAttribute("kategoriat", krepository.findAll());
 		model.addAttribute("tagit", tgrepository.findAll());
-		
-		
+		User user = urepository.findByUsername(pr.getName());
+		model.addAttribute("user", user);
+
 		return "lisaaTapahtuma";
 	}
 
@@ -94,4 +99,34 @@ public class TapahtumaController {
 
 	}
 
+	@GetMapping("/omat-liput")
+	public String getOmatLiput(Model model, Principal principal) {
+		String username = principal.getName();
+		User user = urepository.findByUsername(username);
+		model.addAttribute("liput", lrepository.findOmatLiputById(user.getUserId()));
+		return "userliput";
+
+	}
+
+	@PostMapping("/savelippu")
+	public String saveLippu(Lippu lippu) {
+		lrepository.save(lippu);
+		trepository.lippujenVahennys(lippu.getTapahtuma().getTapahtumaId());
+		return "redirect:omat-liput";
+
+	}
+
+	@GetMapping("/delete/{id}")
+//	@PreAuthorize("hasAuthority('ADMIN')")
+//	@PreAuthorize("#id == authentication.trepository.findById(id)).get().getUser().getUserId()")
+	public String deleteTapahtuma(@PathVariable("id") Long id, Model model, Principal pr) {
+
+		Long taphtuma_userId = trepository.findById(id).get().getUser().getUserId();
+		User käyttäjä = urepository.findByUsername(pr.getName());
+		if (taphtuma_userId == käyttäjä.getUserId() || käyttäjä.getRole() == "ADMIN" ) {
+			trepository.deleteById(id);
+			
+		}
+		return "redirect:../tapahtumalista";
+	}
 }

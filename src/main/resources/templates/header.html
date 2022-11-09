@@ -74,8 +74,8 @@ color:red;
 }
 </style>
 		<div id="header">
-			<a id="logo" href="/tapahtumalista"><h3>Tapahtuma-appi</h3></a>
-			<h3 th:inline="text">Tervetuloa</h3>
+			<h3><a id="logo" href="/tapahtumalista">Etusivu</a></h3>
+			<h3 th:inline="text">Tapahtuma-appi</h3>
 
 			<div style="min-width: 160px;">
 				<div class="dropdown">
@@ -86,7 +86,7 @@ color:red;
 					</button>
 					<div class="dropdown-content">
 						<a sec:authorize="hasAuthority('USER')" href="/omat-tapahtumat">Omat tapahtumat</a> 
-						<a sec:authorize="hasAuthority('USER')" href="#">Liput</a> 
+						<a sec:authorize="hasAuthority('USER')" href="/omat-liput">Liput</a> 
 						<a sec:authorize="hasAuthority('ADMIN')" href="#">Admin-paneeli</a>
 						<form th:action="@{/logout}" method="post">
 							<input id="menu-btn" class="btn btn-link" type="submit" value="Sign Out" />

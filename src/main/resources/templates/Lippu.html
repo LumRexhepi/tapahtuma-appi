@@ -9,17 +9,17 @@
 <style>
 .detail {
 	background-color: whitesmoke;
-	margin: 20px;
 }
 
 .container {
 	width: 50% !important;
-	margin-bottom: 100px;
+	margin-bottom: 300px;
 }
 
-/* .suositukset {
-	margin-top: 50px;
-} */
+.suositukset {
+	margin-top: 100px;
+}
+
 #kuvaus {
 	display: block;
 	white-space: wrap;
@@ -44,13 +44,6 @@
 	width: 200px;
 	margin-top: 20px;
 }
-
-.ala-container {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	flex-wrap: nowrap;
-}
 </style>
 
 </head>
@@ -68,11 +61,8 @@
 			<p class="detail" th:text=${tp.get().name}></p>
 		</div>
 
-		<div>
-			<h5>Kategoria</h5>
-			<p class="detail"
-				th:text="${tp.get().kategoria}? ${tp.get().kategoria.nimi}:''"></p>
-		</div>
+ 		 <div><h5>Kategoria</h5>
+ 		 <p class="detail" th:text="${tp.get().kategoria}? ${tp.get().kategoria.nimi}:''"></p></div>
 
 		<div>
 			<h5>Kuvaus:</h5>
@@ -94,42 +84,17 @@
 			<h5>Lippuja jäljellä:</h5>
 			<p class="detail" th:text="${tp.get().lippujaJaljella}"></p>
 		</div>
-		<div class="ala-container">
-			<div class="ala-container-inner-vas">
-				<a class="btn btn-outline-primary" href="javascript:history.go(-1)">Back</a>
-				
-				<a th:if="${user.UserId} == ${tp.get().user.UserId}" sec:authorize="hasAuthority('USER')"
-					th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})}
-					class="btn btn-outline-danger">Delete</a>
-					 <a
-					sec:authorize="hasAuthority('ADMIN')"
-					th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})}
-					class="btn btn-outline-danger">Delete</a> 
-					<a
-					sec:authorize="hasAuthority('ADMIN')"
-					th:href=@{/edit/{id}(id=${tp.get().tapahtumaId})} 
-					class="btn btn-outline-warning">Edit</a> 
-					<a
-					th:if="${user.UserId} == ${tp.get().user.UserId}" sec:authorize="hasAuthority('USER')"
-					th:href=@{/edit/{id}(id=${tp.get().tapahtumaId})}
-					class="btn btn-outline-warning">Edit</a>
-			</div>
-			<div sec:authorize="hasAuthority('USER')"
-				class="ala-container-inner-oik">
-				<form th:object="${lippu}" action="#" th:action="@{/savelippu}"
-					method="post">
-					<input type="hidden" id="tapahtuma" name="tapahtuma"
-						th:value="${tp.get().tapahtumaId}" th:attr="name = 'tapahtuma'" />
-					<input type="hidden" id="user" name="user"
-						th:value="${user.UserId}" th:attr="name = 'user'" /> <input
-						type="submit" class="btn btn-success" value="Osta Lippu" />
-
-				</form>
-			</div>
+		<div>
+			<a class="btn btn-outline-primary" href="javascript:history.go(-1)">Back</a>
+			<a sec:authorize="hasAuthority('ADMIN')" 
+				th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})}
+				class="btn btn-outline-danger">Delete</a> <a
+				sec:authorize="hasAuthority('ADMIN')"
+				th:href=@{/details/{id}(id=${tp.get().tapahtumaId})}
+				class="btn btn-outline-warning">Edit</a>
 		</div>
-	</div>
-	<div class="container">
-		<div class="suositukset">
+
+<!-- 		<div class="suositukset">
 			<h2>Katso myös näitä:</h2>
 
 			<div class="container-suositukset">
@@ -144,7 +109,7 @@
 					</div>
 
 				</th:blok>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </body>

@@ -83,8 +83,11 @@ public class TapahtumakalenteriSpringApplication {
 			trepository.save(tp2);
 			
 			Lippu l1 = new Lippu(tp2, user1);
+			Lippu l2 = new Lippu(tp2, user1);
+			
 			
 			lrepository.save(l1);
+			lrepository.save(l2);
 			
 			log.info("Tarkista että tagit on olemassa");
 			for (Tagi i : tagit) {
