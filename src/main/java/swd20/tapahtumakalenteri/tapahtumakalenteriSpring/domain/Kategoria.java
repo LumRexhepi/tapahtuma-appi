@@ -3,6 +3,7 @@ package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,9 +15,10 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-
+@Table(name = "kategoria")
 @Entity
 public class Kategoria {
+	@Column(name = "kategoriaId")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long kategoriaid;

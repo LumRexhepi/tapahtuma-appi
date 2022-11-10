@@ -2,10 +2,15 @@ package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.web;
 
 import java.security.Principal;
 import java.util.Optional;
+import java.util.function.IntToLongFunction;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.AbstractPageRequest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +43,7 @@ public class TapahtumaController {
 	private UserRepository urepository;
 	@Autowired
 	private LippuRepository lrepository;
-	
+
 	@GetMapping("/")
 	public String etusivu() {
 		return "redirect:tapahtumalista";
@@ -51,11 +56,29 @@ public class TapahtumaController {
 		return "tapahtumalista";
 
 	}
-
 	@GetMapping("/details/{id}")
 	public String showTapahtuma(@PathVariable("id") Long id, Model model, Principal principal) {
 		model.addAttribute("tp", trepository.findById(id));
-		model.addAttribute("tapahtumat", trepository.findAll());
+		
+		// try catchin sisään sosituksia antavia kutsuja (details sivulla " katso myös näitä")
+		try{
+			// kokeillaan ensin jos tapahtumalla on 2 tagia. käytetään findbytags jossa parametrina menee 2 tagin id:t
+			model.addAttribute("tapahtumat", trepository.findByTags(trepository.findById(id).get().getTagit().get(0).getTagId(), trepository.findById(id).get().getTagit().get(1).getTagId(), trepository.findById(id).get().getTapahtumaId()));
+		}catch (Exception e) {
+			// kokeillaan sen jälkeen findbytag jossa parametrina menee vain yhden tagin id
+			try {
+				model.addAttribute("tapahtumat",
+						trepository.findByTag(trepository.findById(id).get().getTagit().get(0).getTagId(),
+								trepository.findById(id).get().getTapahtumaId()));
+			} catch (Exception es) {
+				// jos tapahtumalle ole annettu tageja käytetään kategoriaa suosituksena
+			model.addAttribute("tapahtumat",trepository.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id));
+			}
+
+		} 
+			
+	
+		
 		model.addAttribute("user", urepository.findByUsername(principal.getName()));
 		model.addAttribute("lippu", new Lippu());
 		return "tapahtumaDetails";
@@ -73,9 +96,15 @@ public class TapahtumaController {
 	}
 
 	@PostMapping("/save")
-	public String Save(Tapahtuma tapahtuma) {
-		trepository.save(tapahtuma);
-		return "redirect:tapahtumalista";
+	public String Save(Tapahtuma tapahtuma, Model m) {
+		try {
+			trepository.save(tapahtuma);
+			return "redirect:tapahtumalista";
+		} catch (Exception e) {
+			m.addAttribute("teksti", "Tapahtuman lisääminen ei onnistut. Tarkista syötteet.");
+			return "virhe";
+		}
+
 	}
 
 	@GetMapping("/lisaa-kategoria")
@@ -87,9 +116,15 @@ public class TapahtumaController {
 	}
 
 	@PostMapping("/saveK")
-	public String SaveK(Kategoria kategoria) {
-		krepository.save(kategoria);
-		return "redirect:lisaa";
+	public String SaveK(Kategoria kategoria, Model m) {
+		try {
+			krepository.save(kategoria);
+			return "redirect:lisaa";
+		} catch (Exception e) {
+			m.addAttribute("teksti", "Kategorian lisääminen ei onnistut. Tarkista syötteet.");
+			return "virhe";
+		}
+
 	}
 
 	@GetMapping("/login")
@@ -125,7 +160,6 @@ public class TapahtumaController {
 			model.addAttribute("teksti", "Tapahtuma on täynnä");
 			return "virhe";
 		}
-		
 
 	}
 
@@ -135,24 +169,27 @@ public class TapahtumaController {
 	public String deleteTapahtuma(@PathVariable("id") Long id, Model model, Principal pr) {
 		Long taphtuma_userId = trepository.findById(id).get().getUser().getUserId();
 		User käyttäjä = urepository.findByUsername(pr.getName());
-		if (taphtuma_userId == käyttäjä.getUserId() || käyttäjä.getRole() == "ADMIN" ) {
+		if (taphtuma_userId == käyttäjä.getUserId() || käyttäjä.getRole() == "ADMIN") {
 			trepository.deleteById(id);
-			
+			return "redirect:../tapahtumalista";
+		} else {
+			model.addAttribute("teksti", "Request denied.");
+			return "virhe";
 		}
-		return "redirect:../tapahtumalista";
+
 	}
-	
+
 	@GetMapping("/nayta-lippu/{id}")
 	public String naytaLippu(Model model, @PathVariable("id") Long id) {
 		model.addAttribute("tp", lrepository.findById(id).get().getTapahtuma());
 		model.addAttribute("lippu", lrepository.findById(id));
 		return "Lippu";
 	}
-	
+
 	@PostMapping("/kayta-lippu")
 	public String kaytaLippu(Lippu lippu) {
 		lrepository.kaytalippu(lippu.getLippuId());
 		return "redirect:omat-liput";
 	}
-	
+
 }

@@ -59,8 +59,8 @@ public class TapahtumakalenteriSpringApplication {
 			
 			tagit.add(d);
 			tagit.add(e);
-			tagit.add(f);
-			tagit.add(g);
+//			tagit.add(f);
+//			tagit.add(g);
 			
 			
 			
@@ -71,9 +71,11 @@ public class TapahtumakalenteriSpringApplication {
 			
 			User user1 = new User("user", "$2a$06$3jYRJrg0ghaaypjZ/.g4SethoeA51ph3UD4kZi9oPkeMTpjKU5uo6", "USER");
 			User user2 = new User("admin", "$2a$10$0MMwY.IQqpsVc1jC8u7IJ.2rT8b0Cd3b3sfIBGV2zfgnPGtT4r0.C", "ADMIN");
+			User user3 = new User("testaaja", "$2a$12$bcAPdNFkuxPKjRqSExqub.vSNU3D8DZkq57lv2/fErGWMYRGM3Ree", "USER");
 			
 			urepository.save(user1);
 			urepository.save(user2);
+			urepository.save(user3);
 			
 			
 //			Tapahtuma tp1 = new Tapahtuma(null, null, null, 0, 0, null, a, null, user1);

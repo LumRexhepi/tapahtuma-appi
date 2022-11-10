@@ -19,11 +19,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.Columns;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.boot.context.properties.bind.Name;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -31,13 +37,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "Tapahtuma")
 @Entity
 public class Tapahtuma {
-
+	
+	@Column(name = "tapahtumaId")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tapahtumaId;
+	
 	private String name;
 
-	@Column(name = "kuvaus", length = 500)
+	@Column(name = "kuvaus", length = 1000)
 	private String kuvaus;
 
 	@FutureOrPresent
@@ -49,7 +57,8 @@ public class Tapahtuma {
 	@Column(name = "lippujajaljella")
 	private int lippujaJaljella;
 	private String paikka;
-
+	
+	
 	@ManyToOne
 	@JsonIgnoreProperties("tapahtumat")
 	@JoinColumn(name = "kategoriaId")
@@ -59,13 +68,12 @@ public class Tapahtuma {
 	@JsonIgnoreProperties("tapahtumat")
 	@JoinColumn(name = "userId")
 	private User user;
-
+	
+	@Size(max = 2) 
 	@Column(name = "tagit")
 	@ManyToMany(cascade = { CascadeType.MERGE })
 	@JoinTable(name = "tapahtuman_tagit", joinColumns = { @JoinColumn(name = "tapahtumaId") }, inverseJoinColumns = {
-			@JoinColumn(name = "tagId") }
-
-	)
+			@JoinColumn(name = "tagId")})
 	@JsonIgnoreProperties("tapahtumat")
 	private List<Tagi> tagit;
 

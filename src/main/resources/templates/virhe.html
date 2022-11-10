@@ -9,6 +9,7 @@
 .container {
 	height: 60vh;
 	display: flex;
+	flex-direction:column;
 	justify-content: center;
 	align-items: center;
 }
@@ -17,7 +18,8 @@
 <body>
 	<div th:replace="header :: menu"></div>
 	<div class="container">
-		<h1 th:text="${teksti}">></h1>
+		<h1 th:text="${teksti}"></h1>
+		<h3><a href="javascript:history.go(-1)">Palaa edelliselle sivulle</a></h3>
 	</div>
 
 </body>

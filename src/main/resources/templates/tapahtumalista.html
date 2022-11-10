@@ -20,7 +20,6 @@
 .tr-data:hover #katso_lisaa {
 	visibility: visible !important;
 }
-
 </style>
 
 
@@ -50,15 +49,15 @@
 					<td th:text="${tp.kategoria}? ${tp.kategoria.nimi}:''"></td>
 					<td th:text="${tp.paikka}"></td>
 					<td th:text="${tp.paiva}"></td>
-					<td th:text="${tp.hinta}"></td>
-
-
+					<td><span th:if="${tp.hinta} > 0" th:text="${tp.hinta} + ' €'"></span>
+						<span th:unless="${tp.hinta} > 0">Ilmainen</span></td>
 					<td><a id="katso_lisaa" class="btn btn-outline-primary"
 						th:href=@{/details/{id}(id=${tp.tapahtumaId})}>Avaa</a></td>
 				</tr>
 			</table>
 			<div class="container" id="napit">
-				<a href="/lisaa"><button class="btn btn-outline-primary">Lisää tapahtuma</button></a>
+				<a href="/lisaa"><button class="btn btn-outline-primary">Lisää
+						tapahtuma</button></a>
 
 
 			</div>
@@ -67,21 +66,19 @@
 	</div>
 	<div class="container">
 		<script type="text/javascript">
-			
-			async function getTapahtumat() {
-				const response = await fetch('http://localhost:8080/tapahtumat');
-				const data = await response.json();
+			async
+			function getTapahtumat() {
+				const response = await
+				fetch('http://localhost:8080/tapahtumat');
+				const data = await
+				response.json();
 				data.map(tulosta);
-					
-				
-				
-			
 
 			}
-			function tulosta(item){
+			function tulosta(item) {
 				document.getElementById('taulu').innerHTML = item.name;
 			}
-			
+
 			getTapahtumat();
 		</script>
 
