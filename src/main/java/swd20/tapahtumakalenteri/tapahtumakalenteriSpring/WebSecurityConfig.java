@@ -25,6 +25,7 @@ public class WebSecurityConfig {
 			 .antMatchers("/h2-console/**").permitAll()
 			 .antMatchers("/signup").permitAll()
 			 .antMatchers("/saveuser").permitAll()
+			 .antMatchers("/tapahtumalista").permitAll()			 	 
 			.anyRequest()
 			.authenticated()
 			.and()

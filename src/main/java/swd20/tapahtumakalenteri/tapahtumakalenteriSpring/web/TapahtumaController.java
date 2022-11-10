@@ -3,6 +3,8 @@ package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.web;
 import java.security.Principal;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -114,10 +116,16 @@ public class TapahtumaController {
 	}
 
 	@PostMapping("/savelippu")
-	public String saveLippu(Lippu lippu) {
-		lrepository.save(lippu);
-		trepository.lippujenVahennys(lippu.getTapahtuma().getTapahtumaId());
-		return "redirect:omat-liput";
+	public String saveLippu(Lippu lippu, Model model) {
+		try {
+			trepository.lippujenVahennys(lippu.getTapahtuma().getTapahtumaId());
+			lrepository.save(lippu);
+			return "redirect:omat-liput";
+		} catch (Exception e) {
+			model.addAttribute("teksti", "Tapahtuma on täynnä");
+			return "virhe";
+		}
+		
 
 	}
 

@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,15 +23,13 @@ public class Tagi {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tagId;
 	private String nimi;
-
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JsonIgnoreProperties("tagit")
-	@JoinTable(name = "tapahtuman_tagit", joinColumns = { @JoinColumn(name = "tagId") }, inverseJoinColumns = {
-			@JoinColumn(name = "tapahtumaId") }
-
-	)
-
-	private List<Tapahtuma> tapahtumat = new ArrayList<Tapahtuma>();;
+	
+	
+	
+	
+	@Column(name = "tapahtumat")
+	@ManyToMany(mappedBy = "tagit" )
+	private List<Tapahtuma> tapahtumat;
 
 	public Tagi(String nimi) {
 		super();

@@ -1,0 +1,25 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<meta http-equiv="content-type" content="text/html ; charset=UTF-8">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+<head>
+<style>
+.container {
+	height: 60vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+</style>
+</head>
+<body>
+	<div th:replace="header :: menu"></div>
+	<div class="container">
+		<h1 th:text="${teksti}">></h1>
+	</div>
+
+</body>
+
+</html>
