@@ -56,29 +56,38 @@ public class TapahtumaController {
 		return "tapahtumalista";
 
 	}
+
 	@GetMapping("/details/{id}")
 	public String showTapahtuma(@PathVariable("id") Long id, Model model, Principal principal) {
 		model.addAttribute("tp", trepository.findById(id));
-		
-		// try catchin sisään sosituksia antavia kutsuja (details sivulla " katso myös näitä")
-		try{
-			// kokeillaan ensin jos tapahtumalla on 2 tagia. käytetään findbytags jossa parametrina menee 2 tagin id:t
-			model.addAttribute("tapahtumat", trepository.findByTags(trepository.findById(id).get().getTagit().get(0).getTagId(), trepository.findById(id).get().getTagit().get(1).getTagId(), trepository.findById(id).get().getTapahtumaId()));
-		}catch (Exception e) {
+
+		// try catchin sisään sosituksia antavia kutsuja (details sivulla " katso myös
+		// näitä")
+		try {
+			// kokeillaan ensin jos tapahtumalla on 2 tagia. käytetään findbytags jossa
+			// parametrina menee 2 tagin id:t
+			model.addAttribute("tapahtumat",
+					trepository.findByTags(trepository.findById(id).get().getTagit().get(0).getTagId(),
+							trepository.findById(id).get().getTagit().get(1).getTagId(),
+							trepository.findById(id).get().getTapahtumaId()));
+		} catch (Exception e) {
 			// kokeillaan sen jälkeen findbytag jossa parametrina menee vain yhden tagin id
 			try {
 				model.addAttribute("tapahtumat",
 						trepository.findByTag(trepository.findById(id).get().getTagit().get(0).getTagId(),
 								trepository.findById(id).get().getTapahtumaId()));
 			} catch (Exception es) {
-				// jos tapahtumalle ole annettu tageja käytetään kategoriaa suosituksena
-			model.addAttribute("tapahtumat",trepository.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id));
+				try {
+					// jos tapahtumalle ole annettu tageja käytetään kategoriaa suosituksena
+					model.addAttribute("tapahtumat", trepository
+							.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id));
+				} catch (Exception ex) {
+					// viimeisenä vaihtoehtona ehdotetaan kaikkia tapahtumia
+					model.addAttribute("tapahtumat", ( trepository.findAll()));
+					
+				}
 			}
-
-		} 
-			
-	
-		
+		}
 		model.addAttribute("user", urepository.findByUsername(principal.getName()));
 		model.addAttribute("lippu", new Lippu());
 		return "tapahtumaDetails";
