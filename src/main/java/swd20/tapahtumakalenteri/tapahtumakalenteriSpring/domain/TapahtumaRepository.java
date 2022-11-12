@@ -30,7 +30,8 @@ public interface TapahtumaRepository extends JpaRepository<Tapahtuma ,   Long>{
 	void lippujenVahennys(@Param("id") Long id);
 	
  
-	@Query("select distinct t from Tapahtuma t join t.tagit ta where ta.tagId = :tagid and t.tapahtumaId != :tapahtumaid")
+	@Query("select distinct t from Tapahtuma t join t.tagit ta "
+			+ "where ta.tagId = :tagid and t.tapahtumaId != :tapahtumaid")
 	List<Tapahtuma> findByTag (@Param("tagid") Long tagid, @Param("tapahtumaid") Long tapahtumaId);
 
 	@Query("select distinct t from Tapahtuma t join t.tagit ta "
@@ -41,8 +42,13 @@ public interface TapahtumaRepository extends JpaRepository<Tapahtuma ,   Long>{
 
 	@Query("from Tapahtuma t where t.kategoria.kategoriaid = :id and t.tapahtumaId != :id2")
 	List<Tapahtuma> findByKategoria ( @Param("id") Long kategoriaid, @Param("id2") Long tapahtumaid);
-	}
+	
+	@Query("from Tapahtuma t where t.tapahtumaId != :id")
+	List<Tapahtuma> findAllBut(@Param("id") Long id);
 
+}
+	
+	
 
 
 

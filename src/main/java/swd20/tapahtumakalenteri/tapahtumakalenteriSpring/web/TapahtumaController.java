@@ -1,6 +1,8 @@
 package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.web;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.IntToLongFunction;
 
@@ -23,6 +25,7 @@ import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Kategoria;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.KategoriaRepository;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Lippu;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.LippuRepository;
+import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Tagi;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.TagiRepository;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Tapahtuma;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.TapahtumaRepository;
@@ -61,36 +64,91 @@ public class TapahtumaController {
 	public String showTapahtuma(@PathVariable("id") Long id, Model model, Principal principal) {
 		model.addAttribute("tp", trepository.findById(id));
 
-		// try catchin sisään sosituksia antavia kutsuja (details sivulla " katso myös
-		// näitä")
-		try {
-			// kokeillaan ensin jos tapahtumalla on 2 tagia. käytetään findbytags jossa
-			// parametrina menee 2 tagin id:t
-			model.addAttribute("tapahtumat",
-					trepository.findByTags(trepository.findById(id).get().getTagit().get(0).getTagId(),
-							trepository.findById(id).get().getTagit().get(1).getTagId(),
-							trepository.findById(id).get().getTapahtumaId()));
-		} catch (Exception e) {
-			// kokeillaan sen jälkeen findbytag jossa parametrina menee vain yhden tagin id
-			try {
-				model.addAttribute("tapahtumat",
-						trepository.findByTag(trepository.findById(id).get().getTagit().get(0).getTagId(),
-								trepository.findById(id).get().getTapahtumaId()));
-			} catch (Exception es) {
-				try {
-					// jos tapahtumalle ole annettu tageja käytetään kategoriaa suosituksena
-					model.addAttribute("tapahtumat", trepository
-							.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id));
-				} catch (Exception ex) {
-					// viimeisenä vaihtoehtona ehdotetaan kaikkia tapahtumia
-					model.addAttribute("tapahtumat", ( trepository.findAll()));
-					
-				}
-			}
-		}
+		model.addAttribute("tapahtumat", suositukset(trepository.findById(id).get().getTagit(), id));
 		model.addAttribute("user", urepository.findByUsername(principal.getName()));
 		model.addAttribute("lippu", new Lippu());
 		return "tapahtumaDetails";
+	}
+
+//	 suositukset "algoritmi". Tarkoituksena on kokeilla hakea ensin kahdella tägillä. sitten yhdellä.
+//	 jos tagejä ei ole annettu haetaan suosituksia kategoriasta.
+//	 Jos suotiukset jäävät alle 4 tapahtuman pituiseksi lisätään siihen lisää tapahtumia
+//	 
+
+	public List<Tapahtuma> suositukset(List<Tagi> tagit, Long id) {
+		List<Tapahtuma> suositukset = new ArrayList<Tapahtuma>();
+
+		// ensin kokeillaan kahdella tagilla
+		int i = 0;
+		while ((suositukset.size() < 4 && suositukset.size() < trepository.findAll().size()) && i < 4) {
+
+			try {
+				List<Tapahtuma> tagi2 = trepository.findByTags(
+						trepository.findById(id).get().getTagit().get(0).getTagId(),
+						trepository.findById(id).get().getTagit().get(1).getTagId(),
+						trepository.findById(id).get().getTapahtumaId());
+				for (Tapahtuma t : tagi2) {
+					if (!suositukset.contains(t)) {
+						suositukset.add(t);
+					}
+				}
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+				
+			try {
+					List<Tapahtuma> tagi1 = trepository.findByTag(
+							trepository.findById(id).get().getTagit().get(0).getTagId(),
+
+							trepository.findById(id).get().getTapahtumaId());
+					for (Tapahtuma t : tagi1) {
+						if (!suositukset.contains(t)) {
+							suositukset.add(t);
+						}
+					}
+				}catch (Exception e) {
+					// TODO: handle exception
+				} 
+			if (suositukset.size()<4) {
+				
+			
+			try {
+						List<Tapahtuma> kategoria = trepository
+								.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id);
+						for (Tapahtuma t : kategoria) {
+							if (!suositukset.contains(t)) {
+								suositukset.add(t);
+							}
+						}
+					} catch (Exception e) {
+						// TODO: handle exception
+					} 
+						
+			try {
+							List<Tapahtuma> kaikki = trepository.findAllBut(id);
+							for (Tapahtuma t : kaikki) {
+								if (!suositukset.contains(t)) {
+									suositukset.add(t);
+								}
+							}
+						} catch (Exception ogw) {
+
+						}
+			}
+				
+			
+			i++;
+
+		}
+
+		try {
+			suositukset = suositukset.subList(0, 4);
+		} catch (Exception c) {
+
+		}
+
+		return suositukset;
+
 	}
 
 	@GetMapping("/lisaa")

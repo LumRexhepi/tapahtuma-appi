@@ -80,9 +80,21 @@ public class TapahtumakalenteriSpringApplication {
 			
 //			Tapahtuma tp1 = new Tapahtuma(null, null, null, 0, 0, null, a, null, user1);
 			Tapahtuma tp2 = new Tapahtuma("Disko", "Disko yökerhossa", fdate.parse("02.11.2025") , 15.00, 1500, "Helsinki", c, tagit, user1);
+			Tapahtuma tp3 = new Tapahtuma("Jalkapalloturnaus", "Jalkapalloturnaus talissa", fdate.parse("15.11.2025") , 15.00, 1500, "Helsinki", c, tagit, user1);
+			Tapahtuma tp4 = new Tapahtuma("Jalkapalloturnaus", "Jalkapalloturnaus talissa", fdate.parse("15.11.2025") , 15.00, 1500, "Helsinki", c, tagit, user1);
+			Tapahtuma tp5 = new Tapahtuma("Jalkapalloturnaus", "Jalkapalloturnaus talissa", fdate.parse("15.11.2025") , 15.00, 1500, "Helsinki", c, tagit, user1);
+			Tapahtuma tp6 = new Tapahtuma("Jalkapalloturnaus", "Jalkapalloturnaus talissa", fdate.parse("15.11.2025") , 15.00, 1500, "Helsinki", c, tagit, user1);
+			Tapahtuma tp7 = new Tapahtuma("Jalkapalloturnaus", "Jalkapalloturnaus talissa", fdate.parse("15.11.2025") , 15.00, 1500, "Helsinki", c, tagit, user1);
 			
 //			trepository.save(tp1);
 			trepository.save(tp2);
+			trepository.save(tp3);
+			trepository.save(tp4);
+			trepository.save(tp5);
+			trepository.save(tp6);
+			trepository.save(tp7);
+
+			
 			
 			Lippu l1 = new Lippu(tp2, user1);
 			Lippu l2 = new Lippu(tp2, user1);
