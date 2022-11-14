@@ -29,15 +29,27 @@ public interface TapahtumaRepository extends JpaRepository<Tapahtuma ,   Long>{
 	@Query("update Tapahtuma  set lippujajaljella = lippujajaljella - 1 where tapahtumaId = :id")
 	void lippujenVahennys(@Param("id") Long id);
 	
- 
+	
+	// suosituksia varten
+	// jos tapahtumalla on vain yksi tagi
 	@Query("select distinct t from Tapahtuma t join t.tagit ta "
 			+ "where ta.tagId = :tagid and t.tapahtumaId != :tapahtumaid")
 	List<Tapahtuma> findByTag (@Param("tagid") Long tagid, @Param("tapahtumaid") Long tapahtumaId);
-
+	
+	// suosituksia varten
+	//jos tapahtumalla on kaksi tagia, mutta palauttaa tapahtumat jossai on jompikumpi tagi
 	@Query("select distinct t from Tapahtuma t join t.tagit ta "
-			+ "where (ta.tagId = :id1 and ta.tagId = :id2) "
-			+ "or (ta.tagId = :id1 or ta.tagId = :id2) "
-			+ "and t.tapahtumaId != :id3")
+			+ "where (ta.tagId = :id1 or ta.tagId = :id2) "
+			+ "and t.tapahtumaId != :id3 ")
+	List<Tapahtuma> findByTag2 (@Param("id1") Long  tagid1, @Param("id2") Long tagid2, @Param("id3") Long tapahtumaid);
+	
+	// suosituksia varten
+	// jos tapahtumalla on kaksi tagia etsitään tapahtumia jossa on samat 2 tagia
+	@Query("select distinct t, count(*) from Tapahtuma t join t.tagit ta "
+			+ "where (ta.tagId = :id1 or ta.tagId = :id2) "
+			+ "and t.tapahtumaId != :id3 "
+			+ "group by t "
+			+ "having count(*) = 2")
 	List<Tapahtuma> findByTags (@Param("id1") Long  tagid1, @Param("id2") Long tagid2, @Param("id3") Long tapahtumaid);
 
 	@Query("from Tapahtuma t where t.kategoria.kategoriaid = :id and t.tapahtumaId != :id2")

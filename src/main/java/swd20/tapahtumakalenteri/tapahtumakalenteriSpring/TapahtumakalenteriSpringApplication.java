@@ -107,7 +107,7 @@ public class TapahtumakalenteriSpringApplication {
 			for (Tagi i : tagit) {
 				System.out.println(i.getNimi());
 			}
-
+			
 		};
 	
 	}

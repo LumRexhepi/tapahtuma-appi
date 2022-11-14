@@ -63,7 +63,7 @@ public class TapahtumaController {
 	@GetMapping("/details/{id}")
 	public String showTapahtuma(@PathVariable("id") Long id, Model model, Principal principal) {
 		model.addAttribute("tp", trepository.findById(id));
-
+		// käytetään suositukset metodia löytämäät sopivimmat suositukset
 		model.addAttribute("tapahtumat", suositukset(trepository.findById(id).get().getTagit(), id));
 		model.addAttribute("user", urepository.findByUsername(principal.getName()));
 		model.addAttribute("lippu", new Lippu());
@@ -77,77 +77,69 @@ public class TapahtumaController {
 
 	public List<Tapahtuma> suositukset(List<Tagi> tagit, Long id) {
 		List<Tapahtuma> suositukset = new ArrayList<Tapahtuma>();
+		try {
+			List<Tapahtuma> tagi2 = trepository.findByTags(trepository.findById(id).get().getTagit().get(0).getTagId(),
+					trepository.findById(id).get().getTagit().get(1).getTagId(),
+					trepository.findById(id).get().getTapahtumaId());
+			for (Tapahtuma t : tagi2) {
+				if (!suositukset.contains(t)) {
+					suositukset.add(t);
+				}
+			}
+		} catch (Exception e) {
 
-		// ensin kokeillaan kahdella tagilla
-		int i = 0;
-		while ((suositukset.size() < 4 && suositukset.size() < trepository.findAll().size()) && i < 4) {
-
+		}
+		if (suositukset.size() < 4) {
 			try {
-				List<Tapahtuma> tagi2 = trepository.findByTags(
-						trepository.findById(id).get().getTagit().get(0).getTagId(),
-						trepository.findById(id).get().getTagit().get(1).getTagId(),
-						trepository.findById(id).get().getTapahtumaId());
-				for (Tapahtuma t : tagi2) {
+				List<Tapahtuma> tapahtumat_tagilla = new ArrayList<Tapahtuma>();
+				if (trepository.findById(id).get().getTagit().size() == 1) {
+					tapahtumat_tagilla = trepository.findByTag(trepository.findById(id).get().getTagit().get(0).getTagId(),
+							trepository.findById(id).get().getTapahtumaId());
+				} else { 
+					tapahtumat_tagilla = trepository.findByTag2(trepository.findById(id).get().getTagit().get(0).getTagId(),
+							trepository.findById(id).get().getTagit().get(1).getTagId(),
+							trepository.findById(id).get().getTapahtumaId());
+				}
+				for (Tapahtuma t : tapahtumat_tagilla) {
 					if (!suositukset.contains(t)) {
 						suositukset.add(t);
 					}
 				}
-			}catch (Exception e) {
+			} catch (Exception e) {
 				// TODO: handle exception
 			}
-				
-			try {
-					List<Tapahtuma> tagi1 = trepository.findByTag(
-							trepository.findById(id).get().getTagit().get(0).getTagId(),
-
-							trepository.findById(id).get().getTapahtumaId());
-					for (Tapahtuma t : tagi1) {
+			if (suositukset.size() < 4) {
+				try {
+					List<Tapahtuma> kategoria = trepository
+							.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id);
+					for (Tapahtuma t : kategoria) {
 						if (!suositukset.contains(t)) {
 							suositukset.add(t);
 						}
 					}
-				}catch (Exception e) {
+				} catch (Exception e) {
 					// TODO: handle exception
-				} 
-			if (suositukset.size()<4) {
-				
-			
-			try {
-						List<Tapahtuma> kategoria = trepository
-								.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id);
-						for (Tapahtuma t : kategoria) {
+				}
+				if (suositukset.size() < 4) {
+					try {
+						List<Tapahtuma> kaikki = trepository.findAllBut(id);
+						for (Tapahtuma t : kaikki) {
 							if (!suositukset.contains(t)) {
 								suositukset.add(t);
 							}
 						}
-					} catch (Exception e) {
-						// TODO: handle exception
-					} 
-						
-			try {
-							List<Tapahtuma> kaikki = trepository.findAllBut(id);
-							for (Tapahtuma t : kaikki) {
-								if (!suositukset.contains(t)) {
-									suositukset.add(t);
-								}
-							}
-						} catch (Exception ogw) {
+					} catch (Exception ogw) {
 
-						}
+					}
+				}
 			}
-				
-			
-			i++;
-
 		}
 
 		try {
-			suositukset = suositukset.subList(0, 4);
+			return suositukset.subList(0, 4);
 		} catch (Exception c) {
-
+			return suositukset;
 		}
-
-		return suositukset;
 
 	}
 
