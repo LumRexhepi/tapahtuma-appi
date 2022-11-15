@@ -1,5 +1,7 @@
 package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,19 +39,13 @@ public class Lippu {
 	@JoinColumn(name = "userId")
 	private User user;
 	
-	
-	
-	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date aikaleima = new Date();
 
-	public Lippu(Tapahtuma tapahtuma, User user) {
+	public Lippu( Tapahtuma tapahtuma, User user) {
 		super();
 		this.tapahtuma = tapahtuma;
 		this.user = user;
-	}
-
-	public Lippu() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Long getLippuId() {
@@ -81,8 +79,19 @@ public class Lippu {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	
+
+	public Date getAikaleima() {
+		return aikaleima;
+	}
+
+	public void setAikaleima(Date aikaleima) {
+		this.aikaleima = aikaleima;
+	}
+
+	public Lippu() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	
 	
 }

@@ -1,19 +1,18 @@
 package swd20.tapahtumakalenteri.tapahtumakalenteriSpring.web;
 
 import java.security.Principal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.IntToLongFunction;
 
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
-import org.springframework.data.domain.AbstractPageRequest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.querydsl.QPageRequest;
-import org.springframework.security.access.prepost.PreAuthorize;
+
+import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,6 +24,7 @@ import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Kategoria;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.KategoriaRepository;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Lippu;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.LippuRepository;
+import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Search;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Tagi;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.TagiRepository;
 import swd20.tapahtumakalenteri.tapahtumakalenteriSpring.domain.Tapahtuma;
@@ -53,9 +53,11 @@ public class TapahtumaController {
 	}
 
 	@GetMapping("/tapahtumalista")
-	public String getBooks(Model model) {
-		model.addAttribute("tapahtumat", trepository.findAll());
-
+	public String getBooks(Model model, Search s) {
+		model.addAttribute("tapahtumat", trepository.findAll(Sort.by(Sort.Direction.ASC, "paiva")));
+		model.addAttribute("kategoriat", krepository.findAll());
+		model.addAttribute("tagit", tgrepository.findAll());
+		model.addAttribute("search", new Search());
 		return "tapahtumalista";
 
 	}
@@ -73,14 +75,16 @@ public class TapahtumaController {
 //	 suositukset "algoritmi". Tarkoituksena on kokeilla hakea ensin kahdella tägillä. sitten yhdellä.
 //	 jos tagejä ei ole annettu haetaan suosituksia kategoriasta.
 //	 Jos suotiukset jäävät alle 4 tapahtuman pituiseksi lisätään siihen lisää tapahtumia
-//	 
-
 	public List<Tapahtuma> suositukset(List<Tagi> tagit, Long id) {
+		//luodaan palautettava lista
 		List<Tapahtuma> suositukset = new ArrayList<Tapahtuma>();
+		
+		// yritetään ensin löytää tapahtumat jossa on samat tagit kuin details sivun tapahtulla
 		try {
 			List<Tapahtuma> tagi2 = trepository.findByTags(trepository.findById(id).get().getTagit().get(0).getTagId(),
 					trepository.findById(id).get().getTagit().get(1).getTagId(),
 					trepository.findById(id).get().getTapahtumaId());
+			//lisätään tyhjään listaan
 			for (Tapahtuma t : tagi2) {
 				if (!suositukset.contains(t)) {
 					suositukset.add(t);
@@ -89,17 +93,25 @@ public class TapahtumaController {
 		} catch (Exception e) {
 
 		}
+		//jos luotu lista jää lyhyeksi tai sen täyttö epäonnistui yritetään luoda suositukset listaa
+		// tapahtumilla jossa on vain yksi yhteinen tagi
 		if (suositukset.size() < 4) {
 			try {
+				//luodaan apulista joka täytetään tapahtumilla jossa yksi tagi on sama
 				List<Tapahtuma> tapahtumat_tagilla = new ArrayList<Tapahtuma>();
+				// jos tarkasteltavalla tapahtumalla on vain yksi tagi
 				if (trepository.findById(id).get().getTagit().size() == 1) {
-					tapahtumat_tagilla = trepository.findByTag(trepository.findById(id).get().getTagit().get(0).getTagId(),
+					tapahtumat_tagilla = trepository.findByTag(
+							trepository.findById(id).get().getTagit().get(0).getTagId(),
 							trepository.findById(id).get().getTapahtumaId());
-				} else { 
-					tapahtumat_tagilla = trepository.findByTag2(trepository.findById(id).get().getTagit().get(0).getTagId(),
+				} else {
+					// 2 tagia, kokeillaan molemmilla erikseen
+					tapahtumat_tagilla = trepository.findByTag2(
+							trepository.findById(id).get().getTagit().get(0).getTagId(),
 							trepository.findById(id).get().getTagit().get(1).getTagId(),
 							trepository.findById(id).get().getTapahtumaId());
 				}
+				// lisätään tapahumat palautettavaan listaan
 				for (Tapahtuma t : tapahtumat_tagilla) {
 					if (!suositukset.contains(t)) {
 						suositukset.add(t);
@@ -108,10 +120,13 @@ public class TapahtumaController {
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
+			//jos lista jää edelleen lyhyeksi tai tapahtumalla ei ole ollenkaan tagejä, suositellaan käyttäjälle 
+			//tapahtumia samasta kategoriasta
+			List<Tapahtuma> kategoria = trepository
+							.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id);
 			if (suositukset.size() < 4) {
 				try {
-					List<Tapahtuma> kategoria = trepository
-							.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id);
+					
 					for (Tapahtuma t : kategoria) {
 						if (!suositukset.contains(t)) {
 							suositukset.add(t);
@@ -120,21 +135,23 @@ public class TapahtumaController {
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
+				
+				//jos lista ei vieläkään ole tarpeeksi iso suositellaan käyttäjälle tapahtumia yleisesti
+				List<Tapahtuma> kaikki = trepository.findAllBut(id);
 				if (suositukset.size() < 4) {
-					try {
-						List<Tapahtuma> kaikki = trepository.findAllBut(id);
-						for (Tapahtuma t : kaikki) {
-							if (!suositukset.contains(t)) {
-								suositukset.add(t);
-							}
-						}
-					} catch (Exception ogw) {
 
+					
+					for (Tapahtuma t : kaikki) {
+						if (!suositukset.contains(t)) {
+							suositukset.add(t);
+						}
 					}
+
 				}
 			}
 		}
 
+		// jos lista on suurempi kun 4 yritetään palauttaa vain 4
 		try {
 			return suositukset.subList(0, 4);
 		} catch (Exception c) {
@@ -148,9 +165,9 @@ public class TapahtumaController {
 		model.addAttribute("tp", new Tapahtuma());
 		model.addAttribute("kategoriat", krepository.findAll());
 		model.addAttribute("tagit", tgrepository.findAll());
-		User user = urepository.findByUsername(pr.getName());
-		model.addAttribute("user", user);
-
+		model.addAttribute("user", urepository.findByUsername(pr.getName()));
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+		model.addAttribute("mindate", dateFormat.format(new Date()));
 		return "lisaaTapahtuma";
 	}
 
@@ -174,6 +191,14 @@ public class TapahtumaController {
 
 	}
 
+	@GetMapping("/lisaa-tagi")
+	public String lisaaTagi(Model model) {
+		model.addAttribute("tagi", new Tagi());
+
+		return "lisaatagi";
+
+	}
+
 	@PostMapping("/saveK")
 	public String SaveK(Kategoria kategoria, Model m) {
 		try {
@@ -184,6 +209,35 @@ public class TapahtumaController {
 			return "virhe";
 		}
 
+	}
+
+	@PostMapping("/saveT")
+	public String SaveT(Tagi tagi, Model m) {
+		try {
+			tgrepository.save(tagi);
+			return "redirect:lisaa";
+		} catch (Exception e) {
+			m.addAttribute("teksti", "Kategorian lisääminen ei onnistut. Tarkista syötteet.");
+			return "virhe";
+		}
+
+	}
+
+	@GetMapping("/edit/{id}")
+	public String showEditTp(@PathVariable("id") Long id, Model model, Principal pr) {
+		// estetään myös metoditasolla muokkaus
+		Long taphtuma_userId = trepository.findById(id).get().getUser().getUserId();
+		User käyttäjä = urepository.findByUsername(pr.getName());
+		if (taphtuma_userId == käyttäjä.getUserId() || käyttäjä.getRole() == "ADMIN") {
+			model.addAttribute("tp", trepository.findById(id));
+			model.addAttribute("kategoriat", krepository.findAll());
+			model.addAttribute("tagit", tgrepository.findAll());
+			return "edit-tapahtuma";
+		}else {
+			model.addAttribute("teksti", "Ei lupaa");
+			return "virhe";
+		}
+		
 	}
 
 	@GetMapping("/login")
@@ -226,13 +280,14 @@ public class TapahtumaController {
 //	@PreAuthorize("hasAuthority('ADMIN')")
 //	@PreAuthorize("#id == authentication.trepository.findById(id)).get().getUser().getUserId()")
 	public String deleteTapahtuma(@PathVariable("id") Long id, Model model, Principal pr) {
+		//estetään metoditasolla luvaton tapahtuman poisto
 		Long taphtuma_userId = trepository.findById(id).get().getUser().getUserId();
 		User käyttäjä = urepository.findByUsername(pr.getName());
 		if (taphtuma_userId == käyttäjä.getUserId() || käyttäjä.getRole() == "ADMIN") {
 			trepository.deleteById(id);
 			return "redirect:../tapahtumalista";
 		} else {
-			model.addAttribute("teksti", "Request denied.");
+			model.addAttribute("teksti", "Kielletty pyyntö.");
 			return "virhe";
 		}
 
@@ -249,6 +304,81 @@ public class TapahtumaController {
 	public String kaytaLippu(Lippu lippu) {
 		lrepository.kaytalippu(lippu.getLippuId());
 		return "redirect:omat-liput";
+	}
+
+	// filtteröity tapahtumalista
+	@GetMapping("/tulokset/{filter}/{keyword}")
+	public String findByKeyword(@PathVariable("filter") String filter, @PathVariable("keyword") String keyword,
+			Model m) {
+		// haetaan ja sortataan tulokset findbykeyword haulla
+		m.addAttribute("tapahtumat", trepository.findByKeyword(keyword, Sort.by(Sort.Direction.ASC, "paiva")));
+		m.addAttribute("kategoriat", krepository.findAll());
+		m.addAttribute("tagit", tgrepository.findAll());
+		m.addAttribute("filter", filter);
+		m.addAttribute("keyword", keyword);
+		m.addAttribute("search", new Search());
+		return "tapahtumalista";
+	}
+	
+	
+	// haku hakusanalla 
+	@PostMapping("/tulokset/hakusana")
+	public String findBySearch(Search keyword, Model m) {
+		m.addAttribute("tapahtumat",
+				trepository.findBySearch(keyword.getKeyword(), Sort.by(Sort.Direction.ASC, "paiva")));
+		m.addAttribute("kategoriat", krepository.findAll());
+		m.addAttribute("tagit", tgrepository.findAll());
+		m.addAttribute("filter", "Hakusana");
+		m.addAttribute("keyword", keyword.getKeyword());
+		return "tapahtumalista";
+	}
+	
+	
+	// hakutulosten sorttaus
+	@PostMapping("/tulokset/{filter}/{keyword}/sort")
+	public String sortWithParam(Search search, @PathVariable("filter") String filter,
+			@PathVariable("keyword") String keyword, Model m) {
+		
+		// katsotaan millä perusteella käyttäjä haluaa järjestää taulun
+		if (search.getSortby().equals("suosio")) {
+			m.addAttribute("tapahtumat", trepository.findByPopularity(search.getKeyword().toLowerCase()));
+		} else {
+			if (search.getFilter().equals("Hakusana")) {
+				m.addAttribute("tapahtumat", trepository.findBySearch(search.getKeyword(),
+						Sort.by(Sort.Direction.DESC, search.getSortby())));
+			} else {
+				m.addAttribute("tapahtumat", trepository.findByKeyword(search.getKeyword(),
+						Sort.by(Sort.Direction.DESC, search.getSortby())));
+			}
+
+		}
+
+		m.addAttribute("kategoriat", krepository.findAll());
+		m.addAttribute("tagit", tgrepository.findAll());
+		m.addAttribute("filter", filter);
+		m.addAttribute("keyword", keyword);
+		m.addAttribute("search", new Search());
+
+		return "tapahtumalista";
+	}
+	
+	
+	// etusivun sorttaus, sama logiikka kun yläpuolella
+	@PostMapping("/sort")
+	public String sortEtusivu(Search search, Model m) {
+
+		if (search.getSortby().equals("suosio")) {
+			m.addAttribute("tapahtumat", trepository.findByPopularity(""));
+		} else {
+
+			m.addAttribute("tapahtumat", trepository.findAll(Sort.by(Sort.Direction.DESC, search.getSortby())));
+		}
+
+		m.addAttribute("kategoriat", krepository.findAll());
+		m.addAttribute("tagit", tgrepository.findAll());
+		m.addAttribute("search", new Search());
+
+		return "tapahtumalista";
 	}
 
 }

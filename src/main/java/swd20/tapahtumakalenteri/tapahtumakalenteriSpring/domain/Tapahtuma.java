@@ -51,6 +51,15 @@ public class Tapahtuma {
 	@FutureOrPresent
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date paiva;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date aikaleima = new Date();
+	
+	public Date getAikaleima() {
+		return aikaleima;
+	}
+
+
 	private double hinta;
 
 	@Min(value = 0)

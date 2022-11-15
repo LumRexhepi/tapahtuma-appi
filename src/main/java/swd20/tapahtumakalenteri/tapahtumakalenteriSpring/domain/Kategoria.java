@@ -22,6 +22,7 @@ public class Kategoria {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long kategoriaid;
+	@Column(name = "nimi")
 	private String nimi;
 	
 	

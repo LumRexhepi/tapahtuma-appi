@@ -22,6 +22,7 @@ public class Tagi {
 	@Column(name = "tagId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tagId;
+	@Column(name = "nimi")
 	private String nimi;
 	
 	

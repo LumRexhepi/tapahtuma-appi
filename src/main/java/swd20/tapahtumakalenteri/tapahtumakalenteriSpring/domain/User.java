@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Table (name = "name")
@@ -24,7 +25,8 @@ public class User {
     // Username with unique constraint
     @Column(name = "username", nullable = false, unique = true)
     private String username;
-
+    
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String passwordHash;
 
