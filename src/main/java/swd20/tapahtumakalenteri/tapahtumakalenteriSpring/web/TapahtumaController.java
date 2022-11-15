@@ -376,8 +376,8 @@ public class TapahtumaController {
 			m.addAttribute("tapahtumat", trepository.findAll(Sort.by(Sort.Direction.ASC, search.getSortby())));
 		}
 
-		m.addAttribute("kategoriat", krepository.findAll());
-		m.addAttribute("tagit", tgrepository.findAll());
+		m.addAttribute("kategoriat", krepository.findAll2());
+		m.addAttribute("tagit", tgrepository.findAllTagit());
 		m.addAttribute("search", new Search());
 
 		return "tapahtumalista";
