@@ -371,7 +371,7 @@ public class TapahtumaController {
 			m.addAttribute("tapahtumat", trepository.findByPopularity(""));
 		} else {
 
-			m.addAttribute("tapahtumat", trepository.findAll(Sort.by(Sort.Direction.DESC, search.getSortby())));
+			m.addAttribute("tapahtumat", trepository.findAll(Sort.by(Sort.Direction.ASC, search.getSortby())));
 		}
 
 		m.addAttribute("kategoriat", krepository.findAll());
