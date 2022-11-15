@@ -52,7 +52,7 @@ public interface TapahtumaRepository extends JpaRepository<Tapahtuma, Long> {
 			+ "where (ta.tagId = :id1 or ta.tagId = :id2) and t.tapahtumaId != :id3 group by t having count(*) = 2")
 	List<Tapahtuma> findByTags(@Param("id1") Long tagid1, @Param("id2") Long tagid2, @Param("id3") Long tapahtumaid);
 
-	@Query("from Tapahtuma t where t.kategoria.kategoriaid = :id and t.tapahtumaId != :id2")
+	@Query("from Tapahtuma t where t.kategoria.kategoriaid = :id and t.tapahtumaId != :id2 ")
 	List<Tapahtuma> findByKategoria(@Param("id") Long kategoriaid, @Param("id2") Long tapahtumaid);
 
 	@Query("from Tapahtuma t where t.tapahtumaId != :id")

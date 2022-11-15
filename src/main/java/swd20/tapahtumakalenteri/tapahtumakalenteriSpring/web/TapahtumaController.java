@@ -55,8 +55,8 @@ public class TapahtumaController {
 	@GetMapping("/tapahtumalista")
 	public String getBooks(Model model, Search s) {
 		model.addAttribute("tapahtumat", trepository.findAll(Sort.by(Sort.Direction.ASC, "paiva")));
-		model.addAttribute("kategoriat", krepository.findAll());
-		model.addAttribute("tagit", tgrepository.findAll());
+		model.addAttribute("kategoriat", krepository.findAll2());
+		model.addAttribute("tagit", tgrepository.findAllTagit());
 		model.addAttribute("search", new Search());
 		return "tapahtumalista";
 
@@ -312,8 +312,8 @@ public class TapahtumaController {
 			Model m) {
 		// haetaan ja sortataan tulokset findbykeyword haulla
 		m.addAttribute("tapahtumat", trepository.findByKeyword(keyword, Sort.by(Sort.Direction.ASC, "paiva")));
-		m.addAttribute("kategoriat", krepository.findAll());
-		m.addAttribute("tagit", tgrepository.findAll());
+		m.addAttribute("kategoriat", krepository.findAll2());
+		m.addAttribute("tagit", tgrepository.findAllTagit());
 		m.addAttribute("filter", filter);
 		m.addAttribute("keyword", keyword);
 		m.addAttribute("search", new Search());
@@ -326,8 +326,9 @@ public class TapahtumaController {
 	public String findBySearch(Search keyword, Model m) {
 		m.addAttribute("tapahtumat",
 				trepository.findBySearch(keyword.getKeyword(), Sort.by(Sort.Direction.ASC, "paiva")));
-		m.addAttribute("kategoriat", krepository.findAll());
-		m.addAttribute("tagit", tgrepository.findAll());
+		m.addAttribute("kategoriat", krepository.findAll2());
+
+		m.addAttribute("tagit", tgrepository.findAllTagit());
 		m.addAttribute("filter", "Hakusana");
 		m.addAttribute("keyword", keyword.getKeyword());
 		return "tapahtumalista";
@@ -353,8 +354,9 @@ public class TapahtumaController {
 
 		}
 
-		m.addAttribute("kategoriat", krepository.findAll());
-		m.addAttribute("tagit", tgrepository.findAll());
+		m.addAttribute("kategoriat", krepository.findAll2());
+
+		m.addAttribute("tagit", tgrepository.findAllTagit());
 		m.addAttribute("filter", filter);
 		m.addAttribute("keyword", keyword);
 		m.addAttribute("search", new Search());

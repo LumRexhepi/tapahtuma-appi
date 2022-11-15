@@ -73,6 +73,14 @@
 			<p class="detail"
 				th:text="${tp.get().kategoria}? ${tp.get().kategoria.nimi}:''"></p>
 		</div>
+		<div>
+			<h5>Tagit</h5>
+			<p class="detail">
+				<th:block th:each="tg : ${tp.get().tagit}">
+					<span th:text="${tg.nimi}"></span>, 
+				</th:block>
+			</p>
+		</div>
 
 		<div>
 			<h5>Kuvaus:</h5>
@@ -97,11 +105,11 @@
 		<div class="ala-container">
 			<div class="ala-container-inner-vas">
 				<a class="btn btn-outline-primary" href="javascript:history.go(-1)">Back</a>
-				
-				<a th:if="${user.UserId} == ${tp.get().user.UserId} or ${user.role} == 'ADMIN'"
+
+				<a
+					th:if="${user.UserId} == ${tp.get().user.UserId} or ${user.role} == 'ADMIN'"
 					th:href=@{/delete/{id}(id=${tp.get().tapahtumaId})}
-					class="btn btn-outline-danger">Delete</a>
-					<a
+					class="btn btn-outline-danger">Delete</a> <a
 					th:if="${user.UserId} == ${tp.get().user.UserId} or ${user.role} == 'ADMIN'"
 					th:href=@{/edit/{id}(id=${tp.get().tapahtumaId})}
 					class="btn btn-outline-warning">Edit</a>

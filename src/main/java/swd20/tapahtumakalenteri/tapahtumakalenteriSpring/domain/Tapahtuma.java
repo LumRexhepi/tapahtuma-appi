@@ -45,7 +45,7 @@ public class Tapahtuma {
 	
 	private String name;
 
-	@Column(name = "kuvaus", length = 1000)
+	@Column(name = "kuvaus", length = 2000)
 	private String kuvaus;
 
 	@FutureOrPresent
