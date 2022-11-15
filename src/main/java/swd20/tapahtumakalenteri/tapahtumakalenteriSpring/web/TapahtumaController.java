@@ -122,11 +122,11 @@ public class TapahtumaController {
 			}
 			//jos lista jää edelleen lyhyeksi tai tapahtumalla ei ole ollenkaan tagejä, suositellaan käyttäjälle 
 			//tapahtumia samasta kategoriasta
-			List<Tapahtuma> kategoria = trepository
-							.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id);
+
 			if (suositukset.size() < 4) {
 				try {
-					
+								List<Tapahtuma> kategoria = trepository
+							.findByKategoria(trepository.findById(id).get().getKategoria().getKategoriaId(), id);
 					for (Tapahtuma t : kategoria) {
 						if (!suositukset.contains(t)) {
 							suositukset.add(t);
