@@ -346,10 +346,10 @@ public class TapahtumaController {
 		} else {
 			if (search.getFilter().equals("Hakusana")) {
 				m.addAttribute("tapahtumat", trepository.findBySearch(search.getKeyword(),
-						Sort.by(Sort.Direction.DESC, search.getSortby())));
+						Sort.by(Sort.Direction.ASC, search.getSortby())));
 			} else {
 				m.addAttribute("tapahtumat", trepository.findByKeyword(search.getKeyword(),
-						Sort.by(Sort.Direction.DESC, search.getSortby())));
+						Sort.by(Sort.Direction.ASC, search.getSortby())));
 			}
 
 		}

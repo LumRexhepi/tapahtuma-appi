@@ -48,7 +48,7 @@ public class Tapahtuma {
 	@Column(name = "kuvaus", length = 2000)
 	private String kuvaus;
 
-	@FutureOrPresent
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date paiva;
 	
